@@ -1,23 +1,26 @@
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
+# The directory Mix will write compiled artifacts to.
+/_build/
 
-# ocamlbuild working directory
-_build/
+# If you run "mix test --cover", coverage assets end up here.
+/cover/
 
-# ocamlbuild targets
-*.byte
-*.native
+# The directory Mix downloads your dependencies sources to.
+/deps/
 
-# oasis generated files
-setup.data
-setup.log
+# Where 3rd-party dependencies like ExDoc output generated docs.
+/doc/
 
-# Merlin configuring file for Vim and Emacs
-.merlin
+# Ignore .fetch files in case you like to edit your project deps locally.
+/.fetch
+
+# If the VM crashes, it generates a dump, let's ignore it too.
+erl_crash.dump
+
+# Also ignore archive artifacts (built via "mix archive.build").
+*.ez
+
+# Ignore package tarball (built via "mix hex.build").
+aoc2018-*.tar
+
+# VS Code LS
+/.elixir_ls
