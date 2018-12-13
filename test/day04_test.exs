@@ -22,23 +22,23 @@ defmodule Day04Test do
   ]
 
   @parsed_log [
-    %Day04.GuardLog{datetime: ~N[1518-11-01 00:00:00], event: :shift_begins, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-01 00:05:00], event: :falls_asleep, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-01 00:25:00], event: :wakes_up, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-01 00:30:00], event: :falls_asleep, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-01 00:55:00], event: :wakes_up, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-01 23:58:00], event: :shift_begins, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-02 00:40:00], event: :falls_asleep, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-02 00:50:00], event: :wakes_up, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-03 00:05:00], event: :shift_begins, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-03 00:24:00], event: :falls_asleep, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-03 00:29:00], event: :wakes_up, guard_id: 10},
-    %Day04.GuardLog{datetime: ~N[1518-11-04 00:02:00], event: :shift_begins, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-04 00:36:00], event: :falls_asleep, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-04 00:46:00], event: :wakes_up, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-05 00:03:00], event: :shift_begins, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-05 00:45:00], event: :falls_asleep, guard_id: 99},
-    %Day04.GuardLog{datetime: ~N[1518-11-05 00:55:00], event: :wakes_up, guard_id: 99}
+    %GuardLog{datetime: ~N[1518-11-01 00:00:00], event: :shift_begins, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-01 00:05:00], event: :falls_asleep, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-01 00:25:00], event: :wakes_up, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-01 00:30:00], event: :falls_asleep, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-01 00:55:00], event: :wakes_up, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-01 23:58:00], event: :shift_begins, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-02 00:40:00], event: :falls_asleep, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-02 00:50:00], event: :wakes_up, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-03 00:05:00], event: :shift_begins, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-03 00:24:00], event: :falls_asleep, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-03 00:29:00], event: :wakes_up, guard_id: 10},
+    %GuardLog{datetime: ~N[1518-11-04 00:02:00], event: :shift_begins, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-04 00:36:00], event: :falls_asleep, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-04 00:46:00], event: :wakes_up, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-05 00:03:00], event: :shift_begins, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-05 00:45:00], event: :falls_asleep, guard_id: 99},
+    %GuardLog{datetime: ~N[1518-11-05 00:55:00], event: :wakes_up, guard_id: 99}
   ]
 
   @sleep_minutes_map %{
@@ -52,11 +52,11 @@ defmodule Day04Test do
   }
 
   test "log parsers is correct" do
-    assert Day04.GuardLog.parse_log(@log) == @parsed_log
+    assert GuardLog.parse_log(@log) == @parsed_log
   end
 
   test "log is convertible to a sleep minutes map" do
-    assert Day04.GuardLog.to_guard_sleep_map(@parsed_log) == @sleep_minutes_map
+    assert GuardLog.to_guard_sleep_map(@parsed_log) == @sleep_minutes_map
   end
 
   test "strategy one works" do
