@@ -41,7 +41,29 @@ defmodule Day04Test do
     %Day04.GuardLog{datetime: ~N[1518-11-05 00:55:00], event: :wakes_up, guard_id: 99}
   ]
 
+  @sleep_minutes_map %{
+    10 =>
+      [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] ++
+        [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50] ++
+        [51, 52, 53, 54, 24, 25, 26, 27, 28],
+    99 =>
+      [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 45] ++
+        [46, 47, 48, 49, 50, 51, 52, 53, 54]
+  }
+
   test "log parsers is correct" do
     assert Day04.GuardLog.parse_log(@log) == @parsed_log
+  end
+
+  test "log is convertible to a sleep minutes map" do
+    assert Day04.GuardLog.to_guard_sleep_map(@parsed_log) == @sleep_minutes_map
+  end
+
+  test "strategy one works" do
+    assert Day04.part_one(@log) == 240
+  end
+
+  test "strategy two works" do
+    assert Day04.part_two(@log) == 4455
   end
 end
