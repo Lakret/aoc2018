@@ -24,3 +24,7 @@ aoc2018-*.tar
 
 # VS Code LS
 /.elixir_ls
+
+# OS X
+.DS_Store
+

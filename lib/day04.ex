@@ -25,7 +25,7 @@ defmodule Day04 do
       sleep_map
       |> Enum.reduce(%{}, fn {guard_id, sleep_minutes}, acc ->
         Enum.reduce(sleep_minutes, acc, fn sleep_minute, acc ->
-          Map.update(acc, sleep_minute, %{guard_id: 1}, fn guard_id_to_count_on_this_minute ->
+          Map.update(acc, sleep_minute, %{guard_id => 1}, fn guard_id_to_count_on_this_minute ->
             guard_id_to_count_on_this_minute
             |> Map.update(guard_id, 1, &(&1 + 1))
           end)

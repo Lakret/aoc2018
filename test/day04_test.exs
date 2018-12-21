@@ -66,4 +66,16 @@ defmodule Day04Test do
   test "strategy two works" do
     assert Day04.part_two(@log) == 4455
   end
+
+  test "correct result on the first part" do
+    input = Day04.read_input() |> String.split("\n", trim: true)
+
+    assert Day04.part_one(input) == 106_710
+  end
+
+  test "correct result on the second part" do
+    input = Day04.read_input() |> String.split("\n", trim: true)
+
+    assert Day04.part_two(input) == 10491
+  end
 end
