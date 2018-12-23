@@ -33,7 +33,10 @@ defmodule Aoc2018 do
       defp read_input_file(filename_suffix) do
         filename = get_module_input_filename_part() <> filename_suffix
         path = Path.join("input", filename)
-        File.read!(path)
+
+        path
+        |> File.read!()
+        |> String.trim()
       end
     end
   end
