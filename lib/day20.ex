@@ -27,22 +27,20 @@ defmodule Day20 do
 
       [branches | rest] when is_list(branches) ->
         # we don't need to walk loops - they can be safely skipped
-        # if loop?(branches) do
-        #   longest_path(acc, rest)
-        # else
-        branches
-        |> Enum.map(&longest_path(0, &1))
-        |> Enum.max()
+        if [] in branches do
+          longest_path(acc, rest)
+        else
+          longest_branch =
+            branches
+            |> Enum.map(&longest_path(0, &1))
+            |> Enum.max()
 
-      # end
+          longest_path(acc + longest_branch, rest)
+        end
 
       [] ->
         acc
     end
-  end
-
-  defp loop?(branches) when is_list(branches) do
-    Enum.any?(branches, fn x -> x == [] end)
   end
 
   @spec parse(binary()) :: path | {binary(), [path]}

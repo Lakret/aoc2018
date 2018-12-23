@@ -30,4 +30,8 @@ defmodule Day20Test do
     assert Day20.part_one("^ENWWW(NEEE|SSE(EE|N))$") == 10
     assert Day20.part_one("^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$") == 18
   end
+
+  test "part_one is correct" do
+    assert Day20.part_one(Day20.read_input()) == 3872
+  end
 end
