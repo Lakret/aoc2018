@@ -4,15 +4,53 @@ defmodule Day20 do
   @type direction :: :n | :e | :w | :s
   @type branch :: [direction]
   @type path :: [direction | branch]
+  @type vertex :: {integer(), integer()}
 
   @spec part_one(binary()) :: integer()
   def part_one(input) do
-    input = String.trim(input)
-
     input
+    |> String.trim()
     |> parse()
     |> longest_path()
   end
+
+  def part_two(input) do
+    input
+    |> String.trim()
+    |> parse()
+    |> path_to_graph({0, 0})
+
+    # graph.adjacency_map |> Enum.filter(fn {k, v} -> v |> Enum.uniq() |> length() > 2 end)
+  end
+
+  @spec path_to_graph(path, vertex) :: Graph.t()
+  def path_to_graph(path, starting_vertex) do
+    {graph, _} =
+      Enum.reduce(path, {Graph.new(), starting_vertex}, fn
+        path, {graph, previous_vertex} ->
+          case path do
+            direction when is_atom(direction) ->
+              new_vertex = move(previous_vertex, direction)
+              graph = Graph.add_vertex(graph, new_vertex, edge_from: previous_vertex, from_edge_label: direction)
+              {graph, new_vertex}
+
+            branches when is_list(branches) ->
+              graph =
+                [graph | Enum.map(branches, &path_to_graph(&1, previous_vertex))]
+                |> Graph.merge()
+
+              {graph, previous_vertex}
+          end
+      end)
+
+    graph
+  end
+
+  @spec move(vertex, direction) :: vertex
+  def move({x, y}, :n), do: {x, y - 1}
+  def move({x, y}, :s), do: {x, y + 1}
+  def move({x, y}, :e), do: {x + 1, y}
+  def move({x, y}, :w), do: {x - 1, y}
 
   @spec longest_path(path) :: integer()
   def longest_path(path) when is_list(path) do
