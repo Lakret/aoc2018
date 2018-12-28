@@ -14,13 +14,15 @@ defmodule Day20 do
     |> longest_path()
   end
 
+  @spec part_two(binary()) :: non_neg_integer()
   def part_two(input) do
     input
     |> String.trim()
     |> parse()
     |> path_to_graph({0, 0})
-
-    # graph.adjacency_map |> Enum.filter(fn {k, v} -> v |> Enum.uniq() |> length() > 2 end)
+    |> distances_from_start({0, 0})
+    |> Enum.map(fn {_vertex, distance} -> distance end)
+    |> Enum.count(fn distance -> distance >= 1000 end)
   end
 
   @spec path_to_graph(path, vertex) :: Graph.t()
@@ -44,6 +46,28 @@ defmodule Day20 do
       end)
 
     graph
+  end
+
+  @spec distances_from_start(Graph.t(), any()) :: [{any(), integer()}]
+  def distances_from_start(graph, start_vertex) do
+    {distances, _visited} =
+      Graph.traverse_breadth_first(graph, start_vertex, %{start_vertex => 0}, fn prev_vertex, curr_vertex, distances ->
+        new_distance_to_curr = distances[prev_vertex] + 1
+
+        case distances[curr_vertex] do
+          nil ->
+            Map.put(distances, curr_vertex, new_distance_to_curr)
+
+          best_distance_to_curr_vertex_so_far ->
+            if new_distance_to_curr < best_distance_to_curr_vertex_so_far do
+              Map.put(distances, curr_vertex, new_distance_to_curr)
+            else
+              distances
+            end
+        end
+      end)
+
+    distances
   end
 
   @spec move(vertex, direction) :: vertex

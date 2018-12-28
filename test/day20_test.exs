@@ -34,4 +34,9 @@ defmodule Day20Test do
   test "part_one is correct" do
     assert Day20.part_one(Day20.read_input()) == 3872
   end
+
+  @tag :heavy
+  test "part_two is correct" do
+    assert Day20.part_two(Day20.read_input()) == 8600
+  end
 end
