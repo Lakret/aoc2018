@@ -133,34 +133,35 @@ defmodule Graph do
 
   `reducer` takes `previous_vertex`, `current_vertex`, and `accumulator` as parameters, and returns new accumulator.
 
-  Returns final value of acumulator, and a list of visited vertices (sorted by visit order).
+  Returns final value of acumulator, and a `MapSet` of visited vertices.
   """
   @spec traverse_breadth_first(Graph.t(), any(), any(), any()) :: {any(), [any()]}
   def traverse_breadth_first(graph, start_vertex, acc, reducer) do
-    unvisited = vertices(graph) |> Enum.reject(fn v -> v == start_vertex end)
-    {acc, visited} = traverse_breadth_first(unvisited, [start_vertex], graph, start_vertex, acc, reducer)
+    unvisited = vertices(graph) |> Enum.reject(fn v -> v == start_vertex end) |> MapSet.new()
+
+    {acc, visited} = traverse_breadth_first(unvisited, MapSet.new([start_vertex]), graph, start_vertex, acc, reducer)
+
     {acc, Enum.reverse(visited)}
   end
 
-  defp traverse_breadth_first([] = _unvisited, visited, _graph, _prev_vertex, acc, _reducer), do: {acc, visited}
-
   defp traverse_breadth_first(unvisited, visited, graph, prev_vertex, acc, reducer) do
-    neighbours = neighbours(graph, prev_vertex)
+    if Enum.empty?(unvisited) do
+      {acc, visited}
+    else
+      neighbours = neighbours(graph, prev_vertex)
 
-    acc =
-      Enum.reduce(neighbours, acc, fn current_vertex, acc ->
-        reducer.(prev_vertex, current_vertex, acc)
+      acc = Enum.reduce(neighbours, acc, fn current_vertex, acc -> reducer.(prev_vertex, current_vertex, acc) end)
+
+      unvisited = MapSet.difference(unvisited, MapSet.new(neighbours))
+
+      Enum.reduce(neighbours, {acc, visited}, fn neighbour, {acc, visited} ->
+        if MapSet.member?(visited, neighbour) do
+          {acc, visited}
+        else
+          visited = MapSet.put(visited, neighbour)
+          traverse_breadth_first(unvisited, visited, graph, neighbour, acc, reducer)
+        end
       end)
-
-    unvisited = unvisited -- neighbours
-
-    Enum.reduce(neighbours, {acc, visited}, fn neighbour, {acc, visited} ->
-      if neighbour in visited do
-        {acc, visited}
-      else
-        visited = [neighbour | visited]
-        traverse_breadth_first(unvisited, visited, graph, neighbour, acc, reducer)
-      end
-    end)
+    end
   end
 end
