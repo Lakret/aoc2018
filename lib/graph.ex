@@ -48,8 +48,12 @@ defmodule Graph do
   end
 
   def vertices(graph) do
-    graph.adjacency_map
-    |> Map.keys()
+    Map.keys(graph.adjacency_map)
+  end
+
+  @spec empty?(Graph.t()) :: boolean()
+  def empty?(graph) do
+    Enum.empty?(graph.adjacency_map)
   end
 
   @doc """
@@ -72,12 +76,10 @@ defmodule Graph do
   """
   @spec add_vertex(Graph.t(), any(), keyword()) :: Graph.t()
   def add_vertex(graph, new_vertex, opts \\ []) do
-    new_adjacency_map =
-      graph.adjacency_map
-      |> Map.put_new(new_vertex, [])
-
     edge_from = Keyword.get(opts, :edge_from)
     from_edge_label = Keyword.get(opts, :from_edge_label)
+
+    new_adjacency_map = Map.put_new(graph.adjacency_map, new_vertex, [])
 
     new_adjacency_map =
       if edge_from do
@@ -92,6 +94,15 @@ defmodule Graph do
       end
 
     %__MODULE__{adjacency_map: new_adjacency_map}
+  end
+
+  @doc """
+  Removes `vertex_to_remove` from `graph` without checking for references
+  to it in other vertices adjacency lists.
+  """
+  @spec remove_vertex_dirty(Graph.t(), any()) :: Graph.t()
+  def remove_vertex_dirty(graph, vertex_to_remove) do
+    %Graph{adjacency_map: Map.delete(graph.adjacency_map, vertex_to_remove)}
   end
 
   @doc """
@@ -163,5 +174,44 @@ defmodule Graph do
         end
       end)
     end
+  end
+
+  @doc """
+  Sorts `graph` topologically, using `next_vertex_selector` as a tie-breaker
+  between vertices with no incoming edges. Returns a list of vertices in topological order.
+
+  This function will return best-effort topological order only: if there are cycles in the graph,
+  vertices in those cycles will not be included in the result.
+
+  `next_vertex_selector` is a fun that will select a vertex that should be first
+  in the resulting topological order from a list of vertices without dependencies.
+  `next_vertex_selector` is guaranteed to receive only non-empty lists as an input.
+  """
+  @spec topological_sort(Graph.t(), any()) :: [any()]
+  def topological_sort(graph, next_vertex_selector \\ fn [hd | _] -> hd end) do
+    topological_sort(vertices_with_no_incoming_edges(graph), [], graph, next_vertex_selector)
+  end
+
+  defp topological_sort(no_incoming_edges, result, graph, next_vertex_selector) do
+    if Enum.empty?(no_incoming_edges) do
+      Enum.reverse(result)
+    else
+      next_vertex = next_vertex_selector.(no_incoming_edges)
+      graph = Graph.remove_vertex_dirty(graph, next_vertex)
+      no_incoming_edges = vertices_with_no_incoming_edges(graph)
+      topological_sort(no_incoming_edges, [next_vertex | result], graph, next_vertex_selector)
+    end
+  end
+
+  @doc """
+  Returns a `MapSet` of vertices with no incoming edges in `graph`.
+  """
+  @spec vertices_with_no_incoming_edges(Graph.t()) :: MapSet.t()
+  def vertices_with_no_incoming_edges(graph) do
+    Enum.reduce(graph.adjacency_map, MapSet.new(vertices(graph)), fn {_vertex, edges_to}, no_incoming_edges_vertices ->
+      Enum.reduce(edges_to, no_incoming_edges_vertices, fn {dest_vertex, _edge}, no_incoming_edges_vertices ->
+        MapSet.delete(no_incoming_edges_vertices, dest_vertex)
+      end)
+    end)
   end
 end
