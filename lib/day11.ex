@@ -21,9 +21,17 @@ defmodule Day11 do
 
     {size, {coords, _power_level}} =
       1..300
-      |> Enum.map(fn size ->
+      |> Flow.from_enumerable()
+      |> Flow.map(fn size ->
         {size, get_left_top_coords_and_power_level_of_max_power_level_square_for_size(summed_area_table, size)}
       end)
+      # |> Flow.group_by(fn {size, {coords, power_level}} -> size end)
+      # |> Flow.take_sort(1, fn {_size1, {_coords1, power_level1}}, {_size2, {_coords2, power_level2}} ->
+      #   power_level2 < power_level1
+      # end)
+      # |> Enum.to_list()
+      # |> hd()
+
       |> Enum.max_by(fn {_size, {_coords, power_level}} -> power_level end)
 
     {coords, size}
