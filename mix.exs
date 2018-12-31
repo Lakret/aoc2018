@@ -22,6 +22,7 @@ defmodule Aoc2018.MixProject do
   defp deps do
     [
       {:timex, "~> 3.1"},
+      {:flow, "~> 0.14"},
       {:clickhousex, "~> 0.2.3"}
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
