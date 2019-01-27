@@ -3,7 +3,6 @@ defmodule Meta.Assertion do
 
   # TODO: try:
   # • Implement assert for every operator in Elixir.
-  # • Add Boolean assertions, such as assert true.
   # • Implement a refute macro for refutations.
   # • Run test cases in parallel within Assertion.Test.run/2 via spawned processes.
   # • Add reports for the module. Include pass/fail counts and execution time.
@@ -65,9 +64,15 @@ defmodule Meta.Assertion.Test do
     Enum.each(tests, fn {test_func, description} ->
       case apply(module, test_func, []) do
         :ok ->
-          IO.write(".")
+          IO.write([
+            IO.ANSI.light_green(),
+            ".",
+            IO.ANSI.default_color()
+          ])
 
         {:fail, reason} ->
+          IO.write(IO.ANSI.light_red())
+
           IO.puts("""
 
           ===============================================
@@ -75,6 +80,8 @@ defmodule Meta.Assertion.Test do
           ===============================================
           #{reason}
           """)
+
+          IO.write(IO.ANSI.default_color())
       end
     end)
   end
