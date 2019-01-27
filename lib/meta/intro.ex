@@ -59,7 +59,7 @@ defmodule Meta.Intro do
         ]}
   """
 
-  # recompile(); require Meta.CH01; import Meta.CH01
+  # recompile(); import Meta.CH01
 
   defmacro say({operator, _, [a, b]}) do
     quote do

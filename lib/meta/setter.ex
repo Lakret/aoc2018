@@ -15,6 +15,7 @@ defmodule Meta.Setter do
       iex> name
       "bar"
   """
+
   # will not work because of hygiene!
   defmacro bind_name_hygiene(new_name) do
     quote do

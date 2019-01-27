@@ -1,5 +1,5 @@
 defmodule Meta.CH02 do
-  # alias Meta.CH02; require CH02; import CH02
+  # alias Meta.CH02; import CH02
   defmacro my_if(expr, do: if_block) do
     if(expr, do: if_block, else: nil)
   end
@@ -55,5 +55,42 @@ defmodule Meta.CH02 do
         end
       end
     end)
+  end
+
+  # this will do all side-effects for `expression` twice -
+  # every time it is unquoted! thus we need to use `bind_quoted`
+  # instead
+  defmacro log_bad(expression) do
+    if Application.get_env(:debugger, :log_level) == :debug do
+      quote do
+        IO.puts("=====")
+        IO.inspect(unquote(expression))
+        IO.puts("=====")
+        unquote(expression)
+      end
+    else
+      expression
+    end
+  end
+
+  defmacro log(expression) do
+    if Application.get_env(:debugger, :log_level) == :debug do
+      quote bind_quoted: [expression: expression] do
+        IO.puts("=====")
+        IO.inspect(expression)
+        IO.puts("=====")
+        expression
+      end
+    else
+      expression
+    end
+  end
+
+  def debug_on() do
+    Application.put_env(:debugger, :log_level, :debug)
+  end
+
+  def debug_off() do
+    Application.put_env(:debugger, :log_level, :prod)
   end
 end
